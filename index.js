@@ -109,7 +109,38 @@ client.on("message", function(message) {
 		}else{
 			message.reply(`Você não tem autorização para isso ${message.author.username} !`);
 		}        
-    }  
+    }
+	//Comando Ban
+	if (command == "ban"){
+		//Argumento ID do usuario
+		let id = args[0];
+
+		//Checar Permissões
+		if(memberIsApprovador == true){
+			//Query para fazer o ban
+			connection.query(
+				'UPDATE vrp_users SET banned = 1 where `id` =' +id+'',
+				function(err,results,fields){
+				//Caso não haja erros retorna mensagem de sucesso, e se tiver erros retorna mensagem de erro
+				if (!err) {
+					if(results.changedRows == 0){
+						message.reply(`O Player com ID ${id} já está banido da Cidade`);
+						message.delete({timeout: 4000});
+					}else{
+						message.reply(`O Player com ID ${id} foi banido da Cidade!`);
+						message.delete({timeout: 4000});
+
+					}
+					console.log(results);
+				}else{
+					message.reply(`Ocorreu um erro ao adicionar o usuario na black list!`);
+					console.log(err);
+				}
+			});
+		}else{
+			message.reply(`Você não tem autorização para isso ${message.author.username}!`);
+		}
+	}  
 	
 	//Comando RemoveWhitelist
 	if (command === "desautorizawl") {
@@ -141,8 +172,8 @@ client.on("message", function(message) {
 			  }
 			);
 		}else{
-			message.reply(`Você não tem autorização para isso ${message.author.username} !`);
-		}        
+				message.reply(`Você não tem autorização para isso ${message.author.username} !`);
+			}        
     }  
 	
 	//Comando Status
